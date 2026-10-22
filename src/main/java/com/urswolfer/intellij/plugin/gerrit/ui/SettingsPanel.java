@@ -101,6 +101,13 @@ public class SettingsPanel {
     private final JCheckBox showAvatarsCheckBox = new JCheckBox(GerritBundle.message("settings.list.avatars"));
     private final JCheckBox showCommentsInEditorCheckBox =
         new JCheckBox(GerritBundle.message("settings.git.comments"));
+    private final JTextField autoReviewersField = new JTextField();
+    private final JCheckBox autoVoteOnPushCheckbox =
+        new JCheckBox(GerritBundle.message("settings.git.autoVote"));
+    private final JLabel autoReviewersHint = new JLabel(
+        GerritBundle.message("settings.git.autoReviewers.tooltip"));
+    private final JLabel autoVoteHint = new JLabel(
+        GerritBundle.message("settings.git.autoVote.tooltip"));
     private final JCheckBox showCommentsInlineCheckBox =
         new JCheckBox(GerritBundle.message("settings.git.comments.inline"));
     private final JLabel minutesLabel = new JLabel(GerritBundle.message("settings.notifications.minutes"));
@@ -127,6 +134,7 @@ public class SettingsPanel {
         projectEnabledCheckbox.setVisible(!project.isDefault());
 
         styleHints(listAllHint);
+        styleHints(autoReviewersHint, autoVoteHint);
         // the offset is in pixels already, which JBUI.Borders would scale again
         listAllHint.setBorder(new EmptyBorder(0, UIUtil.getCheckBoxTextHorizontalOffset(listAllChangesCheckbox), 0, 0));
         minutesLabel.setLabelFor(refreshTimeoutSpinner);
@@ -170,6 +178,10 @@ public class SettingsPanel {
         JPanel git = FormBuilder.createFormBuilder()
             .addComponent(atLeft(pushToGerritCheckbox))
             .addComponent(atLeft(showCommentsInEditorCheckBox))
+            .addComponent(atLeft(autoVoteOnPushCheckbox))
+            .addComponent(autoVoteHint)
+            .addLabeledComponent(GerritBundle.message("settings.git.autoReviewers"), autoReviewersField)
+            .addComponent(autoReviewersHint)
             .addComponent(atLeft(showCommentsInlineCheckBox))
             .getPanel();
         git.setBorder(IdeBorderFactory.createTitledBorder(GerritBundle.message("settings.git.title")));
@@ -509,6 +521,22 @@ public class SettingsPanel {
 
     public void setShowCommentsInEditor(final boolean showCommentsInEditor) {
         showCommentsInEditorCheckBox.setSelected(showCommentsInEditor);
+    }
+
+    public String getAutoReviewers() {
+        return autoReviewersField.getText().trim();
+    }
+
+    public void setAutoReviewers(final String autoReviewers) {
+        autoReviewersField.setText(autoReviewers);
+    }
+
+    public boolean getAutoVoteOnPush() {
+        return autoVoteOnPushCheckbox.isSelected();
+    }
+
+    public void setAutoVoteOnPush(final boolean autoVoteOnPush) {
+        autoVoteOnPushCheckbox.setSelected(autoVoteOnPush);
     }
 
     public boolean getShowCommentsInline() {

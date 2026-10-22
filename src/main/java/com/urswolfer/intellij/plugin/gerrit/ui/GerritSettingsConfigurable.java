@@ -87,7 +87,9 @@ public class GerritSettingsConfigurable implements SearchableConfigurable {
                 !Comparing.equal(gerritSettings.getPushToGerrit(), settingsPane.getPushToGerrit()) ||
                 !Comparing.equal(gerritSettings.getShowAvatars(), settingsPane.getShowAvatars()) ||
                 !Comparing.equal(gerritSettings.getShowCommentsInEditor(), settingsPane.getShowCommentsInEditor()) ||
-                gerritSettings.getShowCommentsInline() != settingsPane.getShowCommentsInline());
+                gerritSettings.getShowCommentsInline() != settingsPane.getShowCommentsInline()||
+                !Comparing.equal(gerritSettings.getAutoReviewers(), settingsPane.getAutoReviewers()) ||
+                !Comparing.equal(gerritSettings.getAutoVoteOnPush(), settingsPane.getAutoVoteOnPush()));
     }
 
     /**
@@ -147,6 +149,10 @@ public class GerritSettingsConfigurable implements SearchableConfigurable {
             GerritPushExtension.setPushToGerritByDefault(settingsPane.getPushToGerrit());
             gerritSettings.setShowAvatars(settingsPane.getShowAvatars());
             gerritSettings.setShowCommentsInEditor(settingsPane.getShowCommentsInEditor());
+            gerritSettings.setAutoReviewers(settingsPane.getAutoReviewers());
+            gerritSettings.setAutoVoteOnPush(settingsPane.getAutoVoteOnPush());
+            GerritPushExtension.setAutoReviewersByDefault(settingsPane.getAutoReviewers());
+            GerritPushExtension.setAutoVoteOnPushByDefault(settingsPane.getAutoVoteOnPush());
             gerritSettings.setShowCommentsInline(settingsPane.getShowCommentsInline());
 
             GerritUpdatesNotificationComponent.configurationChanged();
@@ -222,6 +228,8 @@ public class GerritSettingsConfigurable implements SearchableConfigurable {
             settingsPane.setPushToGerrit(gerritSettings.getPushToGerrit());
             settingsPane.setShowAvatars(gerritSettings.getShowAvatars());
             settingsPane.setShowCommentsInEditor(gerritSettings.getShowCommentsInEditor());
+            settingsPane.setAutoReviewers(gerritSettings.getAutoReviewers());
+            settingsPane.setAutoVoteOnPush(gerritSettings.getAutoVoteOnPush());
             settingsPane.setShowCommentsInline(gerritSettings.getShowCommentsInline());
         }
     }

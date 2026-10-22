@@ -53,6 +53,28 @@ public class GerritPushExtensionTest {
     }
 
     @Test
+    public void testAutoReviewersDefaultIsSetInTheGivenClassLoader() {
+        String before = GerritPushOptionsPanel.autoReviewersByDefault;
+        try {
+            GerritPushExtension.setAutoReviewersByDefault(GerritPushExtension.class.getClassLoader(), "a@example.com");
+            Assert.assertEquals(GerritPushOptionsPanel.autoReviewersByDefault, "a@example.com");
+        } finally {
+            GerritPushOptionsPanel.autoReviewersByDefault = before;
+        }
+    }
+
+    @Test
+    public void testAutoVoteDefaultIsSetInTheGivenClassLoader() {
+        boolean before = GerritPushOptionsPanel.autoVoteOnPushByDefault;
+        try {
+            GerritPushExtension.setAutoVoteOnPushByDefault(GerritPushExtension.class.getClassLoader(), !before);
+            Assert.assertEquals(GerritPushOptionsPanel.autoVoteOnPushByDefault, !before);
+        } finally {
+            GerritPushOptionsPanel.autoVoteOnPushByDefault = before;
+        }
+    }
+
+    @Test
     public void testAccountCompletionCanBeHandedToThePanel() throws Exception {
         // by reflection, as the copy of the panel lives in another class loader: a rename breaks it silently
         GerritPushExtension.handOverAccountCompletion(GerritPushExtensionPanel.class, PushAccountCompletionProvider::new);

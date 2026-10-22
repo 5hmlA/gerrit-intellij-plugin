@@ -37,6 +37,7 @@ import com.urswolfer.gerrit.client.rest.http.HttpStatusException;
 import com.urswolfer.intellij.plugin.gerrit.GerritAccount;
 import com.urswolfer.intellij.plugin.gerrit.GerritAccounts;
 import com.urswolfer.intellij.plugin.gerrit.GerritBundle;
+import com.urswolfer.intellij.plugin.gerrit.GerritDefaults;
 import com.urswolfer.intellij.plugin.gerrit.rest.GerritUtil;
 import com.urswolfer.intellij.plugin.gerrit.util.GitilesUrls;
 import com.urswolfer.intellij.plugin.gerrit.util.UrlUtils;
@@ -124,9 +125,13 @@ public class GerritAccountDialog extends DialogWrapper {
             loginTextField.setText(account.login);
             cloneBaseUrlTextField.setText(account.cloneBaseUrl);
             gitilesUrlTextField.setText(account.gitilesUrl);
+        } else {
+            hostTextField.setText(GerritDefaults.DEFAULT_WEB_URL);
+            loginTextField.setText(GerritDefaults.DEFAULT_LOGIN);
         }
-        passwordField.setText(password != null ? password
-            : account != null && !account.login.isEmpty() ? STORED_PASSWORD_PLACEHOLDER : "");
+        passwordField.setText(password != null && !password.isEmpty() ? password
+            : account != null && !account.login.isEmpty() ? STORED_PASSWORD_PLACEHOLDER
+            : account == null ? GerritDefaults.DEFAULT_PASSWORD : "");
         passwordModified = false;
         passwordField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override

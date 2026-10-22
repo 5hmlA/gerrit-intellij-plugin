@@ -71,6 +71,8 @@ public class GerritSettingsTest {
         expected.put("ShowCommentsInEditor", "true");
         expected.put("ShowCommentsInline", "true");
         expected.put("HiddenColumns", "");
+        expected.put("AutoReviewers", GerritDefaults.DEFAULT_AUTO_REVIEWERS);
+        expected.put("AutoVoteOnPush", "true");
         Assert.assertEquals(written, expected);
     }
 
@@ -87,6 +89,8 @@ public class GerritSettingsTest {
         expected.add("ShowCommentsInEditor");
         expected.add("ShowCommentsInline");
         expected.add("HiddenColumns");
+        expected.add("AutoReviewers");
+        expected.add("AutoVoteOnPush");
         Assert.assertEquals(written.keySet(), expected);
         Assert.assertEquals(written.get("AutomaticRefresh"), "true");
         Assert.assertEquals(written.get("RefreshTimeout"), "15");
@@ -95,6 +99,8 @@ public class GerritSettingsTest {
         Assert.assertEquals(written.get("ShowCommentsInEditor"), "true");
         Assert.assertEquals(written.get("ShowCommentsInline"), "true");
         Assert.assertEquals(written.get("ShowProjectColumn"), "AUTO");
+        Assert.assertEquals(written.get("AutoReviewers"), GerritDefaults.DEFAULT_AUTO_REVIEWERS);
+        Assert.assertEquals(written.get("AutoVoteOnPush"), "true");
     }
 
     /**

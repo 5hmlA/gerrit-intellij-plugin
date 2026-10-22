@@ -64,6 +64,10 @@ public final class GerritSettings implements PersistentStateComponent<GerritSett
         @Property(alwaysWrite = true) @Attribute("RefreshTimeout") public int refreshTimeout = 15;
         @Property(alwaysWrite = true) @Attribute("ReviewNotifications") public boolean reviewNotifications = true;
         @Property(alwaysWrite = true) @Attribute("PushToGerrit") public boolean pushToGerrit = false;
+        @Property(alwaysWrite = true) @Attribute("AutoReviewers")
+        public String autoReviewers = GerritDefaults.DEFAULT_AUTO_REVIEWERS;
+        @Property(alwaysWrite = true) @Attribute("AutoVoteOnPush")
+        public boolean autoVoteOnPush = GerritDefaults.DEFAULT_AUTO_VOTE_ON_PUSH;
         @Property(alwaysWrite = true) @Attribute("ShowChangeNumberColumn") public boolean showChangeNumberColumn = false;
         @Property(alwaysWrite = true) @Attribute("ShowChangeIdColumn") public boolean showChangeIdColumn = false;
         @Property(alwaysWrite = true) @Attribute("ShowTopicColumn") public boolean showTopicColumn = false;
@@ -164,6 +168,22 @@ public final class GerritSettings implements PersistentStateComponent<GerritSett
 
     public boolean getPushToGerrit() {
         return state.pushToGerrit;
+    }
+
+    public String getAutoReviewers() {
+        return state.autoReviewers;
+    }
+
+    public void setAutoReviewers(String autoReviewers) {
+        state.autoReviewers = autoReviewers != null ? autoReviewers : "";
+    }
+
+    public boolean getAutoVoteOnPush() {
+        return state.autoVoteOnPush;
+    }
+
+    public void setAutoVoteOnPush(boolean autoVoteOnPush) {
+        state.autoVoteOnPush = autoVoteOnPush;
     }
 
     public boolean getShowChangeNumberColumn() {

@@ -91,6 +91,8 @@ public final class GerritPushExtension {
             gitPluginClassLoader = gitIdeaPluginClassLoader;
             handOverMessages(gitIdeaPluginClassLoader);
             setPushToGerritByDefault(GerritSettings.getInstance().getPushToGerrit());
+            setAutoReviewersByDefault(GerritSettings.getInstance().getAutoReviewers());
+            setAutoVoteOnPushByDefault(GerritSettings.getInstance().getAutoVoteOnPush());
 
             modifyGitBranchPanel(classPool, gitIdeaPluginClassLoader);
 
@@ -136,6 +138,46 @@ public final class GerritPushExtension {
             panelClass.getMethod("setPushToGerritByDefault", boolean.class).invoke(null, pushToGerrit);
         } catch (ReflectiveOperationException | LinkageError e) {
             LOG.warn("Failed to apply the push to Gerrit default.", e);
+        }
+    }
+
+    /**
+     * Makes the push dialogs opened from now on suggest the reviewers, without an IDE restart. Does nothing while
+     * the push dialog is not injected: the value is applied once it is.
+     */
+    public static void setAutoReviewersByDefault(String autoReviewers) {
+        ClassLoader loader = gitPluginClassLoader;
+        if (loader != null) {
+            setAutoReviewersByDefault(loader, autoReviewers);
+        }
+    }
+
+    static void setAutoReviewersByDefault(ClassLoader loader, String autoReviewers) {
+        try {
+            Class<?> panelClass = Class.forName(GerritPushOptionsPanel.class.getName(), true, loader);
+            panelClass.getMethod("setAutoReviewersByDefault", String.class).invoke(null, autoReviewers);
+        } catch (ReflectiveOperationException | LinkageError e) {
+            LOG.warn("Failed to apply the auto reviewers default.", e);
+        }
+    }
+
+    /**
+     * Makes the push dialogs opened from now on vote Code-Review+1, without an IDE restart. Does nothing while
+     * the push dialog is not injected: the value is applied once it is.
+     */
+    public static void setAutoVoteOnPushByDefault(boolean autoVoteOnPush) {
+        ClassLoader loader = gitPluginClassLoader;
+        if (loader != null) {
+            setAutoVoteOnPushByDefault(loader, autoVoteOnPush);
+        }
+    }
+
+    static void setAutoVoteOnPushByDefault(ClassLoader loader, boolean autoVoteOnPush) {
+        try {
+            Class<?> panelClass = Class.forName(GerritPushOptionsPanel.class.getName(), true, loader);
+            panelClass.getMethod("setAutoVoteOnPushByDefault", boolean.class).invoke(null, autoVoteOnPush);
+        } catch (ReflectiveOperationException | LinkageError e) {
+            LOG.warn("Failed to apply the auto vote on push default.", e);
         }
     }
 

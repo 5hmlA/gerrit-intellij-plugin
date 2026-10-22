@@ -41,6 +41,22 @@ public class GerritPushOptionsPanel extends VcsPushOptionsPanel {
      */
     public static volatile boolean pushToGerritByDefault;
 
+    /**
+     * The reviewers which every push to Gerrit suggests, comma separated, and whether it votes Code-Review+1.
+     * As {@link #pushToGerritByDefault}: set from the copy of this class in the Git plugin class loader by
+     * {@link GerritPushExtension#setAutoReviewersByDefault} and {@link GerritPushExtension#setAutoVoteOnPushByDefault}.
+     */
+    public static volatile String autoReviewersByDefault = "";
+    public static volatile boolean autoVoteOnPushByDefault;
+
+    public static void setAutoReviewersByDefault(String autoReviewers) {
+        autoReviewersByDefault = autoReviewers;
+    }
+
+    public static void setAutoVoteOnPushByDefault(boolean autoVoteOnPush) {
+        autoVoteOnPushByDefault = autoVoteOnPush;
+    }
+
     public static void setPushToGerritByDefault(boolean pushToGerrit) {
         if (pushToGerrit != pushToGerritByDefault) {
             GerritPushExtensionPanel.forgetClickedBoxes();
@@ -67,7 +83,8 @@ public class GerritPushOptionsPanel extends VcsPushOptionsPanel {
     public GerritPushOptionsPanel(boolean pushToGerrit, Project project) {
         Predicate<Project> enabled = enabledForProject;
         gerritPushExtensionPanel = enabled == null || enabled.test(project)
-            ? new GerritPushExtensionPanel(pushToGerrit, project.getLocationHash(), project)
+            ? new GerritPushExtensionPanel(pushToGerrit, project.getLocationHash(), project,
+                autoReviewersByDefault, autoVoteOnPushByDefault)
             : null;
     }
 

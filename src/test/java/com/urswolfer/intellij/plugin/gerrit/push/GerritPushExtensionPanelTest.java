@@ -62,6 +62,14 @@ public class GerritPushExtensionPanelTest {
         }
     }
 
+    @Test
+    public void testDefaultsReachThePanel() {
+        GerritPushExtensionPanel panel =
+            new GerritPushExtensionPanel(true, "defaults", null, "a@example.com,b@example.com", true);
+        Assert.assertTrue(panel.getAutoVoteOnPushCheckBox().isSelected());
+        Assert.assertEquals(panel.getReviewers(), "a@example.com,b@example.com");
+    }
+
     private static GerritPushExtensionPanel panel(boolean pushToGerritByDefault, String projectKey) {
         return new GerritPushExtensionPanel(pushToGerritByDefault, projectKey, null);
     }

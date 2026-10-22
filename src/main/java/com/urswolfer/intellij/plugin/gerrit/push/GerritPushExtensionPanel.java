@@ -84,6 +84,7 @@ public class GerritPushExtensionPanel extends JPanel {
     private JCheckBox draftChangeCheckBox;
     private JCheckBox submitChangeCheckBox;
     private JCheckBox readyCheckBox;
+    private JCheckBox autoVoteOnPushCheckBox;
     private JTextField branchTextField;
     private JTextField topicTextField;
     private JTextField hashTagTextField;
@@ -119,8 +120,18 @@ public class GerritPushExtensionPanel extends JPanel {
     private final String projectKey;
 
     public GerritPushExtensionPanel(boolean pushToGerritByDefault, String projectKey, @Nullable Project project) {
+        this(pushToGerritByDefault, projectKey, project, "", false);
+    }
+
+    public GerritPushExtensionPanel(boolean pushToGerritByDefault, String projectKey, @Nullable Project project,
+                                    String autoReviewers, boolean autoVoteOnPush) {
         this.projectKey = projectKey;
         createLayout(project);
+
+        if (!autoReviewers.isEmpty()) {
+            setText(reviewersTextField, autoReviewers);
+        }
+        autoVoteOnPushCheckBox.setSelected(autoVoteOnPush);
 
         pushToGerritCheckBox.setSelected(LAST_PUSH_TO_GERRIT.getOrDefault(projectKey, pushToGerritByDefault));
         pushToGerritCheckBox.addActionListener(new SettingsStateActionListener());
@@ -136,6 +147,14 @@ public class GerritPushExtensionPanel extends JPanel {
 
     JCheckBox getPushToGerritCheckBox() {
         return pushToGerritCheckBox;
+    }
+
+    JCheckBox getAutoVoteOnPushCheckBox() {
+        return autoVoteOnPushCheckBox;
+    }
+
+    String getReviewers() {
+        return getText(reviewersTextField);
     }
 
     @Override
@@ -263,6 +282,10 @@ public class GerritPushExtensionPanel extends JPanel {
         readyCheckBox = new JCheckBox(PushMessages.message("push.ready"));
         readyCheckBox.setToolTipText(PushMessages.message("push.ready.tooltip"));
         indentedSettingPanel.add(readyCheckBox, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null));
+
+        autoVoteOnPushCheckBox = new JCheckBox(PushMessages.message("push.autoVote"));
+        autoVoteOnPushCheckBox.setToolTipText(PushMessages.message("push.autoVote.tooltip"));
+        indentedSettingPanel.add(autoVoteOnPushCheckBox, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null));
 
         publishDraftCommentsCheckBox = new JCheckBox(PushMessages.message("push.publishComments"));
         publishDraftCommentsCheckBox.setToolTipText(PushMessages.message("push.publishComments.tooltip"));
@@ -395,6 +418,14 @@ public class GerritPushExtensionPanel extends JPanel {
                 : ((JTextField) field).getText();
     }
 
+    private static void setText(JComponent field, String text) {
+        if (field instanceof TextFieldWithCompletion) {
+            ((TextFieldWithCompletion) field).setText(text);
+        } else {
+            ((JTextField) field).setText(text);
+        }
+    }
+
     private static void addDocumentListener(JComponent field, ChangeTextActionListener listener) {
         if (field instanceof TextFieldWithCompletion) {
             ((TextFieldWithCompletion) field).addDocumentListener(listener);
@@ -413,6 +444,7 @@ public class GerritPushExtensionPanel extends JPanel {
         draftChangeCheckBox.addActionListener(gerritPushChangeListener);
         submitChangeCheckBox.addActionListener(gerritPushChangeListener);
         readyCheckBox.addActionListener(gerritPushChangeListener);
+        autoVoteOnPushCheckBox.addActionListener(gerritPushChangeListener);
 
         ChangeTextActionListener gerritPushTextChangeListener = new ChangeTextActionListener();
         branchTextField.getDocument().addDocumentListener(gerritPushTextChangeListener);
@@ -459,6 +491,9 @@ public class GerritPushExtensionPanel extends JPanel {
         }
         if (submitChangeCheckBox.isSelected()) {
             gerritSpecs.add("submit");
+        }
+        if (autoVoteOnPushCheckBox.isSelected()) {
+            gerritSpecs.add("l=Code-Review+1");
         }
         if (withTextOptions) {
             addOption(gerritSpecs, "topic", getTrimmedText(topicTextField));
